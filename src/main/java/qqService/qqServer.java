@@ -41,7 +41,18 @@ public class qqServer {
                 //启动线程
                 serverConnectClientThread.start();
                 //把该线程放入到一个集合中进行管理
+                MangerClientThread.addConnectClientThread(user.getUserId(), serverConnectClientThread);
+
+            }else {
+                //登陆失败
+                message.setMessageType(MessqgeType.MESSAGE_LOGIN_FAIL);
+                obs.writeObject(message);
+                //关闭socket
+                socket.close();
             }
+
+            //如果服务端退出了while，说明服务器端不在监听，一次关闭ServerSocket
+            serverSocket.close();
         }
     }
 }
