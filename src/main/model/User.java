@@ -1,9 +1,9 @@
-package model;
+package main.model;
 
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private static final long serializableUUID = 1l;
+
     private String userId;
     private String password;
 

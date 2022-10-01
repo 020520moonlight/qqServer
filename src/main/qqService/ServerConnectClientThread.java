@@ -1,6 +1,7 @@
-package qqService;
+package main.qqService;
 
-import model.Message;
+import main.model.Message;
+
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +12,7 @@ import java.net.Socket;
  */
 public class ServerConnectClientThread extends Thread{
     private Socket socket;
-    private String userID;//了解到这个服务端的用户ID
+    private String userID;//了解到这个服务端的用户ID，以后后面的socket太多，增加辨识度
 
     public ServerConnectClientThread(Socket socket,String userID){
         this.userID=userID;
@@ -20,7 +21,7 @@ public class ServerConnectClientThread extends Thread{
     @Override
     public void run(){//这里线程处于run状态，可以发送和接收消息
         while (true){
-            System.out.println("服务端和客户端保持通讯，读取数据");
+            System.out.println("服务端和客户端"+userID+"保持通讯，读取数据");
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message) ois.readObject();

@@ -1,4 +1,4 @@
-package qqService;
+package main.qqService;
 
 import java.util.HashMap;
 
