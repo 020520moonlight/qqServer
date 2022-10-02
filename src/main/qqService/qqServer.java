@@ -10,7 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 这是服务端在监听9999端口，等待客户端的连接，保持通信
@@ -18,7 +22,8 @@ import java.util.HashMap;
 public class qqServer {
     private ServerSocket serverSocket = null;
 
-    private static HashMap<String,User> users = new HashMap<>();
+    private static ConcurrentHashMap<String,User> users = new ConcurrentHashMap<>();
+
 
     static {
         users.put("100",new User("100","123456"));
