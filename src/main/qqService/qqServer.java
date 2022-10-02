@@ -26,6 +26,7 @@ public class qqServer {
         users.put("123",new User("abc","123"));
         users.put("admin",new User("admin","admin"));
         users.put("100",new User("100","123"));
+        users.put("1",new User("1","1"));
     }
     private boolean check(String userID,String pwd){
         User user= users.get(userID);

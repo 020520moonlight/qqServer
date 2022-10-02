@@ -20,6 +20,10 @@ public class ServerConnectClientThread extends Thread{
         this.userID=userID;
         this.socket=socket;
     }
+
+    private Socket getSocket(){
+        return socket;
+    }
     @Override
     public void run(){//这里线程处于run状态，可以发送和接收消息
         while (true){
@@ -51,6 +55,14 @@ public class ServerConnectClientThread extends Thread{
                     socket.close();
                     //退出线程
                     break;
+                }else if (message.getMessageType().equals(MessqgeType.MESSAGE_COMM_MES)){
+                    //拿到普通聊天消息
+                    //根据message过去getter id 然后再得到对应的线程
+                    ServerConnectClientThread serverConnectClientThread = MangerClientThread.get(message.getReciever());
+                    //得到对应的socket对象，将message对象转发给指定的客户端
+                    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                    oos.writeObject(message);
+                    //如果客户不在线，可以保存到数据库，实现离线留言
                 }
                 else{
                     //其他类型的业务处理
@@ -64,5 +76,6 @@ public class ServerConnectClientThread extends Thread{
 
         }
     }
+
 
 }
