@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 /**
  * 该类对应的对象和某个客户端保持一个通讯
@@ -63,8 +64,24 @@ public class ServerConnectClientThread extends Thread{
                     ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
                     oos.writeObject(message);
                     //如果客户不在线，可以保存到数据库，实现离线留言
-                }
-                else{
+                }else if (message.getMessageType().equals(MessqgeType.MESSAGE_CLIENT_TOALL)){
+                    //群发信息，需要遍历管理线程集合排除自己的所有线程的socket对象都得到，然后把message进行转发
+                    HashMap<String,ServerConnectClientThread> hashMap = MangerClientThread.getHashMap();
+                    for (String key : hashMap.keySet()){
+                        //key就是在线的用户ID
+                        //排除群发消息的发送用户
+                        ServerConnectClientThread serverConnectClientThread = hashMap.get(key);
+                        if (!key.equals(message.getSender())){
+                            ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                            oos.writeObject(message);
+                        }
+                    }
+                } else if (message.getMessageType().equals(MessqgeType.MESSAGE_FILE_MES)) {
+                    //根据接收者id，获得对应线程和socket对象，将message对象转发
+                    ServerConnectClientThread serverConnectClientThread = MangerClientThread.get(message.getReciever());
+                    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                    oos.writeObject(message);
+                } else{
                     //其他类型的业务处理
 
                 }

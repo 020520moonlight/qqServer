@@ -17,6 +17,9 @@ public class MangerClientThread {
     public static void removeConnectClientThread(String userID){
         hashMap.remove(userID);
     }
+    public static HashMap getHashMap(){
+        return hashMap;
+    }
 
     //返回在线用户列表
     public static String getOnlineUser(){
