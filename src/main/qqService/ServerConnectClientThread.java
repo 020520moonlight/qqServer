@@ -10,9 +10,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+
+import static main.qqService.qqServer.offOnlineMessages;
+
 
 /**
  * 该类对应的对象和某个客户端保持一个通讯
@@ -21,7 +21,7 @@ public class ServerConnectClientThread extends Thread{
     private Socket socket;
     private String userID;//了解到这个服务端的用户ID，以后后面的socket太多，增加辨识度
 
-    private static ConcurrentHashMap<String, ArrayList<Message>> offOnlineMessages = new ConcurrentHashMap<>();
+
 
     public ServerConnectClientThread(Socket socket,String userID){
         this.userID=userID;
@@ -70,16 +70,15 @@ public class ServerConnectClientThread extends Thread{
                     //用户在线建立了通讯执行直接发送，否则存储再离线数据库等待上线才发送
                     //如果客户不在线，可以保存到数据库，实现离线留言
                     ArrayList<Message> tempDB = new ArrayList<>();
-                    while (serverConnectClientThread == null){//循环等待
+                    if (serverConnectClientThread == null){//循环等待
                         tempDB.add(message);
                         offOnlineMessages.put(reciever,tempDB);
+                        System.out.println("等待用户上线中"+reciever);
+                    }else {//在登录时判断有无在离校时给自己发消息的
+                        //在线后，得到对应的socket对象，将message对象转发给指定的客户端
+                        ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                        oos.writeObject(message);//这样是实时通讯
                     }
-                    //在线后，得到对应的socket对象，将message对象转发给指定的客户端
-                    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
-                    for (Message m : tempDB){
-                        oos.writeObject(m);
-                    }
-                    oos.writeObject(message);//这样是实时通讯
 
                 }else if (message.getMessageType().equals(MessqgeType.MESSAGE_CLIENT_TOALL)){
                     //群发信息，需要遍历管理线程集合排除自己的所有线程的socket对象都得到，然后把message进行转发

@@ -24,6 +24,7 @@ public class qqServer {
 
     private static ConcurrentHashMap<String,User> users = new ConcurrentHashMap<>();
 
+    public static ConcurrentHashMap<String, ArrayList<Message>> offOnlineMessages = new ConcurrentHashMap<>();
 
     static {
         users.put("100",new User("100","123456"));
