@@ -22,7 +22,7 @@ public class ServerConnectClientThread extends Thread{
         this.socket=socket;
     }
 
-    private Socket getSocket(){
+    public Socket getSocket(){
         return socket;
     }
     @Override

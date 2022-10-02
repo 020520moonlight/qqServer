@@ -49,6 +49,8 @@ public class qqServer {
             System.out.println("服务端在监听9999端口");
             //端口可以写在配置文件里卖弄
             serverSocket = new ServerSocket(9999);
+            //启动一个推送线程的服务
+            new Thread(new SendNewsToAll()).start();
             //监听是循环的，当和某个客户端建立连接后，会继续监听
             while (true){
                 Socket socket = serverSocket.accept();
@@ -71,7 +73,8 @@ public class qqServer {
                     serverConnectClientThread.start();
                     //把该线程放入到一个集合中进行管理
                     MangerClientThread.addConnectClientThread(user.getUserId(), serverConnectClientThread);
-                }else {
+                }
+                else {
                     //登陆失败
                     System.out.println("登陆失败"+user.getUserId());
                     message.setMessageType(MessqgeType.MESSAGE_LOGIN_FAIL);
