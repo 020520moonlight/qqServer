@@ -79,6 +79,18 @@ public class qqServer {
                     serverConnectClientThread.start();
                     //把该线程放入到一个集合中进行管理
                     MangerClientThread.addConnectClientThread(user.getUserId(), serverConnectClientThread);
+
+                    //遍历离线消息队列，如果登录账号有离线信息则输出到socket出来
+                    for (String offLineUser : offOnlineMessages.keySet()){
+                        if(user.getUserId().equals(offLineUser)){
+                            System.out.println("输出离线消息");
+                            ArrayList<Message> messageArrayList = offOnlineMessages.get(offLineUser);
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(MangerClientThread.get(user.getUserId()).getSocket().getOutputStream());
+                            for (Message m : messageArrayList){
+                                objectOutputStream.writeObject(m);
+                            }
+                        }
+                    }
                 }
                 else {
                     //登陆失败
