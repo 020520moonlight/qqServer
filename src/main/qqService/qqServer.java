@@ -1,8 +1,6 @@
 package main.qqService;
 
 
-
-
 import main.model.Message;
 import main.model.MessqgeType;
 import main.model.User;
@@ -12,12 +10,35 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 /**
  * 这是服务端在监听9999端口，等待客户端的连接，保持通信
  */
 public class qqServer {
     private ServerSocket serverSocket = null;
+
+    private static HashMap<String,User> users = new HashMap<>();
+
+    static {
+        users.put("100",new User("100","123456"));
+        users.put("123",new User("123","123"));
+        users.put("123",new User("abc","123"));
+        users.put("admin",new User("admin","admin"));
+        users.put("100",new User("100","123"));
+    }
+    private boolean check(String userID,String pwd){
+        User user= users.get(userID);
+        if (user == null){
+            System.out.println("用户名不存在");
+            return false;
+        }
+        if(!user.getPassword().equals(pwd)){
+            System.out.println("密码不存在");
+            return false;
+        }
+        return true;
+    }
 
     public static void main(String[] args) throws IOException {
         new qqServer();
@@ -38,7 +59,7 @@ public class qqServer {
                 //构建一个message，准备回复客户端
                 Message message = new Message();
                 //先死后活
-                if (user.getUserId().equals("100")&&user.getPassword().equals("123456")){
+                if (check(user.getUserId(), user.getPassword())){
                     //登陆成功
                     message.setMessageType(MessqgeType.MESSAGE_LOGIN_SECCESS);
                     oos.writeObject(message);

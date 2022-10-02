@@ -3,9 +3,14 @@ package main.model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-
+    private static final long serialVersionUID = 2L;
     private String userId;
     private String password;
+
+    public User(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
 
     public String getUserId() {
         return userId;

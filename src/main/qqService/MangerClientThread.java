@@ -14,4 +14,15 @@ public class MangerClientThread {
     public static ServerConnectClientThread get(String userID){
         return hashMap.get(userID);
     }
+
+    //返回在线用户列表
+    public static String getOnlineUser(){
+        StringBuilder onlineUser = null;
+        //集合遍历，遍历 hashmap的key
+        for (String key:hashMap.keySet()){
+            onlineUser.append(key).append(" ");
+        }
+        return onlineUser.toString();
+    }
+
 }
