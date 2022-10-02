@@ -24,7 +24,7 @@ public class ServerConnectClientThread extends Thread{
     public void run(){//这里线程处于run状态，可以发送和接收消息
         while (true){
             System.out.println("服务端和客户端"+userID+"保持通讯，读取数据");
-            try {
+            try {//这里线程出错
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Message message = (Message) ois.readObject();
                 //后面使用message
@@ -42,7 +42,17 @@ public class ServerConnectClientThread extends Thread{
                     //返回给客户端
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                     oos.writeObject(message1);
-                }else{
+                }else if (message.getMessageType().equals(MessqgeType.MESSAGE_CLIENT_EXIT)){
+                    //客户端要退出来
+                    System.out.println(message.getSender()+"要退出系统了");
+                    //将客户端对应线程从线程集合谜面移除
+                    MangerClientThread.removeConnectClientThread(message.getSender());
+                    //注意这个线程对象不止一个，集合里面线程很多，关闭连接
+                    socket.close();
+                    //退出线程
+                    break;
+                }
+                else{
                     //其他类型的业务处理
 
                 }
